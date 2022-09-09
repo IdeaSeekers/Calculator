@@ -1,2 +1,2 @@
 # Calculator
-This project is a pen test
+The backend part of Calculator.
