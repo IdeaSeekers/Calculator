@@ -12,10 +12,4 @@ public class CalculatorAPI
         return CalculationResult.Success(result);
         // return CalculationResult.Failure("???");
     }
-
-    public static void main()
-    {
-        var result = Calculate(new CalculationQuery("1 + 2"));
-        Console.WriteLine(result);
-    }
 }

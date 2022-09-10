@@ -11,9 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="MathParser.org-mXparser, Version=5.0.7.0, Culture=neutral, PublicKeyToken=0fbab7add73ed6e2, processorArchitecture=MSIL">
-            <HintPath>..\packages\MathParser.org-mXparser.5.0.7\lib\net461\MathParser.org-mXparser.dll</HintPath>
-        </Reference>
+      <PackageReference Include="MathParser.org-mXparser" Version="5.0.7" />
     </ItemGroup>
 
 </Project>
