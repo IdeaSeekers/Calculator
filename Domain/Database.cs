@@ -2,7 +2,7 @@ using FluentResults;
 
 namespace Domain;
 
-public readonly record struct CalculationHistory(CalculationResult[] Data);
+public readonly record struct CalculationHistory(CalculationData[] Data);
 
 public readonly record struct UpdateHistoryResult(Result<CalculationHistory> History);
 
