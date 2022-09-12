@@ -20,11 +20,11 @@ public class DatabaseAPI
         try
         {
             HistoryDatabaseRow row = new HistoryDatabaseRow();
-            row.id = usersRepo.Get(userInfo).id;
-            row.query = calculationData.Query.QueryString;
-            row.valid = calculationData.Result.Result.IsSuccess;
-            row.result = -1;
-            if (row.valid) row.result = calculationData.Result.Result.Value;
+            row.Id = usersRepo.Get(userInfo).Id;
+            row.Query = calculationData.Query.QueryString;
+            row.Valid = calculationData.Result.Result.IsSuccess;
+            row.Result = -1;
+            if (row.Valid) row.Result = calculationData.Result.Result.Value;
             
             historyRepo.Update(row);
 
@@ -42,15 +42,15 @@ public class DatabaseAPI
     {
         try
         {
-            Int32 id = usersRepo.Get(userInfo).id;
+            Int32 id = usersRepo.Get(userInfo).Id;
             List<HistoryDatabaseRow> history = historyRepo.Get(id);
             CalculationData[] data = new CalculationData[history.Count];
 
             for (int i = 0; i < data.Length; i++)
             {
-                CalculationQuery query = new CalculationQuery(history[i].query);
+                CalculationQuery query = new CalculationQuery(history[i].Query);
                 CalculationResult result;
-                if (history[i].valid) result = new CalculationResult(Result.Ok(history[i].result));
+                if (history[i].Valid) result = new CalculationResult(Result.Ok(history[i].Result));
                 else result = new CalculationResult(Result.Fail("Wrong query"));
 
                 data[i] = new CalculationData(query, result);
@@ -84,8 +84,8 @@ public class DatabaseAPI
         {
             UserDatabaseRow row = usersRepo.Get(userInfo);
 
-            Login login = new Login(row.login);
-            Password password = new Password(row.password);
+            Login login = new Login(row.Login);
+            Password password = new Password(row.Password);
             User user = new User(login, password);
 
             return new GetUserResult(Result.Ok(user));

@@ -4,11 +4,11 @@ namespace Database;
 
 public class DatabaseConnectionProvider
 {
-    private String connectionString;
+    private String _connectionString;
 
     public DatabaseConnectionProvider(String databaseUser, String password, String databaseName)
     {
-        connectionString = "Server=127.0.0.1;" +
+        _connectionString = "Server=127.0.0.1;" +
                            "User Id=" + databaseUser + ";" +
                            "Password=" + password + ";" +
                            "Database=" + databaseName + ";";
@@ -16,7 +16,7 @@ public class DatabaseConnectionProvider
 
     public NpgsqlConnection GetConnection()
     {
-        NpgsqlConnection conn = new NpgsqlConnection(connectionString);
+        NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
         conn.Open();
         return conn;
     }

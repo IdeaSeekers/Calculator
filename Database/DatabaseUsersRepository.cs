@@ -5,55 +5,55 @@ using Npgsql;
 
 public struct UserDatabaseRow
 {
-    public Int32 id;
-    public String login;
-    public String password;
+    public Int32 Id;
+    public String Login;
+    public String Password;
 }
 
 public class DatabaseUsersRepository
 {
-    private DatabaseConnectionProvider connectionProvider;
+    private DatabaseConnectionProvider _connectionProvider;
     
-    private String usersTableName = "Users";
-    private String usersIdColumn = "id";
-    private String usersLoginColumn = "login";
-    private String usersPasswordColumn = "password";
+    private String _usersTableName = "Users";
+    private String _usersIdColumn = "id";
+    private String _usersLoginColumn = "login";
+    private String _usersPasswordColumn = "password";
 
-    private String getSelectQueryString(String login)
+    private String GetSelectQueryString(String login)
     {
         return String.Format(
             "SELECT {1}, {2}, {3} FROM {0} WHERE {2} = '{4}'",
-            usersTableName, usersIdColumn, usersLoginColumn, usersPasswordColumn, login
+            _usersTableName, _usersIdColumn, _usersLoginColumn, _usersPasswordColumn, login
         );
     }
     
-    private String getInsertQueryString(String login, String password)
+    private String GetInsertQueryString(String login, String password)
     {
         return String.Format("INSERT INTO {0} ({1}, {2}) VALUES ('{3}', '{4}')",
-            usersTableName, usersLoginColumn, usersPasswordColumn,
+            _usersTableName, _usersLoginColumn, _usersPasswordColumn,
             login, password);
     }
     
     public DatabaseUsersRepository(String databaseUser, String password, String databaseName)
     {
-        connectionProvider = new DatabaseConnectionProvider(databaseUser, password, databaseName);
+        _connectionProvider = new DatabaseConnectionProvider(databaseUser, password, databaseName);
     }
     
     public UserDatabaseRow Get(UserInfo key)
     {
         UserDatabaseRow user = new UserDatabaseRow();
-        String selectIdQueryString = getSelectQueryString(key.Login.Data);
+        String selectIdQueryString = GetSelectQueryString(key.Login.Data);
 
-        NpgsqlCommand selectIdCommand = new NpgsqlCommand(selectIdQueryString, connectionProvider.GetConnection());
+        NpgsqlCommand selectIdCommand = new NpgsqlCommand(selectIdQueryString, _connectionProvider.GetConnection());
         NpgsqlDataReader reader = selectIdCommand.ExecuteReader();
 
         if (reader.HasRows)
         {
             int idColumn = 0, loginColumn = 1, passwordColumn = 2;
             reader.Read();
-            user.id = reader.GetInt32(idColumn);
-            user.login = reader.GetString(loginColumn);
-            user.password = reader.GetString(passwordColumn);
+            user.Id = reader.GetInt32(idColumn);
+            user.Login = reader.GetString(loginColumn);
+            user.Password = reader.GetString(passwordColumn);
         }
         else
         {
@@ -66,9 +66,9 @@ public class DatabaseUsersRepository
     // TODO: do we support password change?
     public void Insert(User user)
     {
-        String registrationQueryString = getInsertQueryString(user.Login.Data, user.Password.Data);
+        String registrationQueryString = GetInsertQueryString(user.Login.Data, user.Password.Data);
 
-        NpgsqlCommand registerCommand = new NpgsqlCommand(registrationQueryString, connectionProvider.GetConnection());
+        NpgsqlCommand registerCommand = new NpgsqlCommand(registrationQueryString, _connectionProvider.GetConnection());
         int ret = registerCommand.ExecuteNonQuery();
 
         if (ret == -1) throw new NpgsqlException("ExecuteNonQuery() inside update failed");
