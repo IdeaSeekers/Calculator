@@ -19,7 +19,7 @@ public class DatabaseUsersRepository
     private String usersLoginColumn = "login";
     private String usersPasswordColumn = "password";
 
-    private String getSelectIdQueryString(String login)
+    private String getSelectQueryString(String login)
     {
         return String.Format(
             "SELECT {1}, {2}, {3} FROM {0} WHERE {2} = '{4}'",
@@ -42,7 +42,7 @@ public class DatabaseUsersRepository
     public UserDatabaseRow Get(UserInfo key)
     {
         UserDatabaseRow user = new UserDatabaseRow();
-        String selectIdQueryString = getSelectIdQueryString(key.Login.Data);
+        String selectIdQueryString = getSelectQueryString(key.Login.Data);
 
         NpgsqlCommand selectIdCommand = new NpgsqlCommand(selectIdQueryString, connectionProvider.GetConnection());
         NpgsqlDataReader reader = selectIdCommand.ExecuteReader();
