@@ -12,7 +12,7 @@ public struct UserDatabaseRow
 
 public class DatabaseUsersRepository
 {
-    private NpgsqlConnection conn;
+    private DatabaseConnectionProvider connectionProvider;
     
     private String usersTableName = "Users";
     private String usersIdColumn = "id";
@@ -22,7 +22,7 @@ public class DatabaseUsersRepository
     private String getSelectIdQueryString(String login)
     {
         return String.Format(
-            "SELECT {1}, {2}, {3} FROM {0} WHERE {2} = {4}",
+            "SELECT {1}, {2}, {3} FROM {0} WHERE {2} = '{4}'",
             usersTableName, usersIdColumn, usersLoginColumn, usersPasswordColumn, login
         );
     }
@@ -34,9 +34,9 @@ public class DatabaseUsersRepository
             login, password);
     }
     
-    public DatabaseUsersRepository(NpgsqlConnection connection)
+    public DatabaseUsersRepository(String databaseUser, String password, String databaseName)
     {
-        conn = connection;
+        connectionProvider = new DatabaseConnectionProvider(databaseUser, password, databaseName);
     }
     
     public UserDatabaseRow Get(UserInfo key)
@@ -44,7 +44,7 @@ public class DatabaseUsersRepository
         UserDatabaseRow user = new UserDatabaseRow();
         String selectIdQueryString = getSelectIdQueryString(key.Login.Data);
 
-        NpgsqlCommand selectIdCommand = new NpgsqlCommand(selectIdQueryString, conn);
+        NpgsqlCommand selectIdCommand = new NpgsqlCommand(selectIdQueryString, connectionProvider.GetConnection());
         NpgsqlDataReader reader = selectIdCommand.ExecuteReader();
 
         if (reader.HasRows)
@@ -59,16 +59,16 @@ public class DatabaseUsersRepository
         {
             throw new KeyNotFoundException("No such user");
         }
-
+        
         return user;
     }
     
     // TODO: do we support password change?
-    public void Update(UserInfo key, UserDatabaseRow value)
+    public void Insert(User user)
     {
-        String registrationQueryString = getInsertQueryString(key.Login.Data, value.password);
+        String registrationQueryString = getInsertQueryString(user.Login.Data, user.Password.Data);
 
-        NpgsqlCommand registerCommand = new NpgsqlCommand(registrationQueryString, conn);
+        NpgsqlCommand registerCommand = new NpgsqlCommand(registrationQueryString, connectionProvider.GetConnection());
         int ret = registerCommand.ExecuteNonQuery();
 
         if (ret == -1) throw new NpgsqlException("ExecuteNonQuery() inside update failed");

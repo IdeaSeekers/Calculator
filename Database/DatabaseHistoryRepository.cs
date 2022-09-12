@@ -14,7 +14,7 @@ public struct HistoryDatabaseRow
 
 public class DatabaseHistoryRepository
 {
-    private NpgsqlConnection conn;
+    private DatabaseConnectionProvider connectionProvider;
     
     private String historyTableName = "Calculations";
     private String historyIdColumn = "id";
@@ -24,28 +24,28 @@ public class DatabaseHistoryRepository
 
     private String getSelectHistoryString(Int32 id)
     {
-        return String.Format("SELECT {2}, {3}, {4} FROM {0} WHERE {1} = {5}",
+        return String.Format("SELECT {1}, {2}, {3}, {4} FROM {0} WHERE {1} = {5}",
             historyTableName, historyIdColumn, historyQueryColumn, historyValidColumn, historyResultColumn,
             id);
     }
 
     private String getInsertHistoryString(Int32 id, String query, Boolean valid, Double result)
     {
-        return String.Format("INSERT INTO {0} ({1}, {2}, {3}, {4}) VALUES ({5}, {6}, {7}, {8})",
+        return String.Format("INSERT INTO {0} ({1}, {2}, {3}, {4}) VALUES ({5}, '{6}', {7}, {8})",
             historyTableName, historyIdColumn, historyQueryColumn, historyValidColumn, historyResultColumn,
             id, query, valid, result);
     }
     
-    public DatabaseHistoryRepository(NpgsqlConnection connection)
+    public DatabaseHistoryRepository(String databaseUser, String password, String databaseName)
     {
-        conn = connection;
+        connectionProvider = new DatabaseConnectionProvider(databaseUser, password, databaseName);
     }
 
     public List<HistoryDatabaseRow> Get(Int32 key)
     {
         String getHistoryString = getSelectHistoryString(key);
 
-        NpgsqlCommand selectIdCommand = new NpgsqlCommand(getHistoryString, conn);
+        NpgsqlCommand selectIdCommand = new NpgsqlCommand(getHistoryString, connectionProvider.GetConnection());
         NpgsqlDataReader reader = selectIdCommand.ExecuteReader();
         List<HistoryDatabaseRow> history = new List<HistoryDatabaseRow>();
         
@@ -59,7 +59,7 @@ public class DatabaseHistoryRepository
                 row.query = reader.GetString(queryColumn);
                 row.valid = reader.GetBoolean(validColumn);
                 row.result = reader.GetDouble(resultColumn);
-                history.Append(row);
+                history.Add(row);
             }
 
             reader.NextResult();
@@ -68,11 +68,11 @@ public class DatabaseHistoryRepository
         return history;
     }
 
-    public void Update(Int32 key, HistoryDatabaseRow value)
+    public void Update(HistoryDatabaseRow value)
     {
-        String insertHistoryString = getInsertHistoryString(key, value.query, value.valid, value.result);
+        String insertHistoryString = getInsertHistoryString(value.id, value.query, value.valid, value.result);
         
-        NpgsqlCommand insertHistoryCommand = new NpgsqlCommand(insertHistoryString, conn);
+        NpgsqlCommand insertHistoryCommand = new NpgsqlCommand(insertHistoryString, connectionProvider.GetConnection());
         int ret = insertHistoryCommand.ExecuteNonQuery();
 
         if (ret == -1) throw new NpgsqlException("ExecuteNonQuery() inside insert failed");
