@@ -43,9 +43,9 @@ public class DatabaseHistoryRepository
 
     public List<HistoryDatabaseRow> Get(Int32 key)
     {
-        String getHistoryString = GetSelectHistoryString(key);
+        String getHistoryQueryString = GetSelectHistoryString(key);
 
-        NpgsqlCommand selectIdCommand = new NpgsqlCommand(getHistoryString, _connectionProvider.GetConnection());
+        NpgsqlCommand selectIdCommand = new NpgsqlCommand(getHistoryQueryString, _connectionProvider.GetConnection());
         NpgsqlDataReader reader = selectIdCommand.ExecuteReader();
         List<HistoryDatabaseRow> history = new List<HistoryDatabaseRow>();
         
@@ -70,9 +70,9 @@ public class DatabaseHistoryRepository
 
     public void Update(HistoryDatabaseRow value)
     {
-        String insertHistoryString = GetInsertHistoryString(value.Id, value.Query, value.Valid, value.Result);
+        String insertHistoryQueryString = GetInsertHistoryString(value.Id, value.Query, value.Valid, value.Result);
         
-        NpgsqlCommand insertHistoryCommand = new NpgsqlCommand(insertHistoryString, _connectionProvider.GetConnection());
+        NpgsqlCommand insertHistoryCommand = new NpgsqlCommand(insertHistoryQueryString, _connectionProvider.GetConnection());
         int ret = insertHistoryCommand.ExecuteNonQuery();
 
         if (ret == -1) throw new NpgsqlException("ExecuteNonQuery() inside insert failed");

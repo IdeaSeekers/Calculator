@@ -42,9 +42,9 @@ public class DatabaseUsersRepository
     public UserDatabaseRow Get(UserInfo key)
     {
         UserDatabaseRow user = new UserDatabaseRow();
-        String selectIdQueryString = GetSelectQueryString(key.Login.Data);
+        String selectQueryString = GetSelectQueryString(key.Login.Data);
 
-        NpgsqlCommand selectIdCommand = new NpgsqlCommand(selectIdQueryString, _connectionProvider.GetConnection());
+        NpgsqlCommand selectIdCommand = new NpgsqlCommand(selectQueryString, _connectionProvider.GetConnection());
         NpgsqlDataReader reader = selectIdCommand.ExecuteReader();
 
         if (reader.HasRows)
