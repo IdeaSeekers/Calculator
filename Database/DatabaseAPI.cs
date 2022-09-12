@@ -6,7 +6,6 @@ namespace Database;
 
 public class DatabaseAPI
 {
-    private NpgsqlConnection conn;
     private DatabaseHistoryRepository historyRepo;
     private DatabaseUsersRepository usersRepo;
     
