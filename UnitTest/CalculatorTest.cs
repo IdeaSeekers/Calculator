@@ -1,5 +1,6 @@
 using Calculator;
 using Domain;
+using FluentResults;
 
 namespace UnitTest
 {
@@ -71,15 +72,31 @@ namespace UnitTest
         [TestCase("sqrt 1 + 2)")]
         [TestCase("sqrt(1 2)")]
         [TestCase("sqrt(1")]
-        [TestCase("1 / 0")]
-        [TestCase("log(-9)")]
-        [TestCase("sqrt(-5)")]
-        [TestCase("(10!)!")]
-        [TestCase("10^10^10")]
-        public void SyntaxErrorTests(string userInput)
+        public void SyntaxErrorsTests(string userInput)
         {
             var actual = CalculatorAPI.Calculate(new CalculationQuery(userInput));
             Assert.That(actual.Result.IsFailed, Is.True);
+        }
+        
+        [Test]
+        [TestCase("1 / 0")]
+        [TestCase("ln(-5)")]
+        [TestCase("log(-7)")]
+        [TestCase("sqrt(-9)")]
+        public void NanTests(string userInput)
+        {
+            var actual = CalculatorAPI.Calculate(new CalculationQuery(userInput));
+            Console.WriteLine(actual.Result.ToString());
+            Assert.That(actual.Result.Reasons.First().Message, Is.EqualTo("Not a number"));
+        }
+        
+        [Test]
+        [TestCase("(10!)!")]
+        [TestCase("10^10^10")]
+        public void InfinityTests(string userInput)
+        {
+            var actual = CalculatorAPI.Calculate(new CalculationQuery(userInput));
+            Assert.That(actual.Result.Reasons.First().Message, Is.EqualTo("Infinity"));
         }
     }
 }
