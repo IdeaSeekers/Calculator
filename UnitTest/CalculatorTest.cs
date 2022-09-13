@@ -41,7 +41,7 @@ namespace UnitTest
         [TestCase("(2 + 2) * 2", 8)]
         [TestCase("12 - 1 + log(10)^2 - log(10^2) * 2 + sqrt(9) / 2! + 11", 20.5)]
         [TestCase("12 - (1 + (log(10)^2 - log(10^2)) * 2 + sqrt(9)) / 2! + 11", 22)]
-        [TestCase("(12 - 1 + log(10)^2 - log(10^2)) * (2 + sqrt(9)) / 2! + 11",  36)]
+        [TestCase("(12 - 1 + log(10)^2 - log(10^2)) * (2 + sqrt(9)) / 2! + 11", 36)]
         public void ParenthesisTests(string userInput, double expected)
         {
             var actual = CalculatorAPI.Calculate(new CalculationQuery(userInput)).Result.Value;
