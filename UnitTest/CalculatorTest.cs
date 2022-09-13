@@ -1,6 +1,5 @@
 using Calculator;
 using Domain;
-using FluentResults;
 
 namespace UnitTest
 {
