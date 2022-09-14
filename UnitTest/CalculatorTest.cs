@@ -4,7 +4,7 @@ using Domain;
 namespace UnitTest
 {
     [TestFixture]
-    public class Tests
+    public class CalculatorTests
     {
         [Test]
         [TestCase("0", 0)]
@@ -85,7 +85,6 @@ namespace UnitTest
         public void NanTests(string userInput)
         {
             var actual = CalculatorAPI.Calculate(new CalculationQuery(userInput));
-            Console.WriteLine(actual.Result.ToString());
             Assert.That(actual.Result.Reasons.First().Message, Is.EqualTo("Not a number"));
         }
         
