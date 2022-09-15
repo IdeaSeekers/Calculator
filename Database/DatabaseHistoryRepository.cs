@@ -41,9 +41,9 @@ public class DatabaseHistoryRepository
         _connectionProvider = new DatabaseConnectionProvider(databaseUser, password, databaseName);
     }
 
-    public List<HistoryDatabaseRow> Get(Int32 key)
+    public List<HistoryDatabaseRow> Get(Int32 userId)
     {
-        String getHistoryQueryString = GetSelectHistoryString(key);
+        String getHistoryQueryString = GetSelectHistoryString(userId);
 
         NpgsqlCommand selectIdCommand = new NpgsqlCommand(getHistoryQueryString, _connectionProvider.GetConnection());
         NpgsqlDataReader reader = selectIdCommand.ExecuteReader();
