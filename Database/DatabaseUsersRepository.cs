@@ -63,7 +63,6 @@ public class DatabaseUsersRepository
         return user;
     }
     
-    // TODO: do we support password change?
     public void Insert(User user)
     {
         String registrationQueryString = GetInsertQueryString(user.Login.Data, user.Password.Data);
