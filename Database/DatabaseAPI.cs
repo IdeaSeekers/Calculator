@@ -45,8 +45,8 @@ public class DatabaseAPI
     {
         try
         {
-            Int32 id = usersRepo.Get(userInfo).Id;
-            List<HistoryDatabaseRow> history = historyRepo.Get(id);
+            Int32 userId = usersRepo.Get(userInfo).Id;
+            List<HistoryDatabaseRow> history = historyRepo.Get(userId);
             CalculationData[] data = new CalculationData[history.Count];
 
             for (int i = 0; i < data.Length; i++)
