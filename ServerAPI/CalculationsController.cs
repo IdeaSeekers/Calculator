@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Calculator;
 using Domain;
 
 namespace ServerAPI;
@@ -19,7 +18,7 @@ public class CalculationsController : Controller
         {
             return BadRequest();
         }
-        
+
         var calculationQuery = new CalculationQuery(calculationRequest);
         var calculationResult = CalculatorAPI.Calculate(calculationQuery).Result;
 
@@ -27,6 +26,7 @@ public class CalculationsController : Controller
         {
             return Json(new { comment = calculationResult.Errors.First() });
         }
-        return Json( new { result=calculationResult.Value, comment = "OK" } );
+
+        return Json(new { result = calculationResult.Value, comment = "OK" });
     }
 }

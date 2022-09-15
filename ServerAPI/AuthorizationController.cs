@@ -30,7 +30,7 @@ public class AuthorizationController : Controller
             return Forbid();
         }
 
-        return Json( new {authToken = result.Value});
+        return Json(new { authToken = result.Value });
     }
 
     [HttpPost, Route("/signup")]
