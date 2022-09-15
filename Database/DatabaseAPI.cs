@@ -24,7 +24,8 @@ public class DatabaseAPI
             row.Query = calculationData.Query.QueryString;
             row.Valid = calculationData.Result.Result.IsSuccess;
             row.Result = -1;
-            if (row.Valid) row.Result = calculationData.Result.Result.Value;
+            if (row.Valid) 
+                row.Result = calculationData.Result.Result.Value;
             
             historyRepo.Update(row);
 
@@ -50,8 +51,10 @@ public class DatabaseAPI
             {
                 CalculationQuery query = new CalculationQuery(history[i].Query);
                 CalculationResult result;
-                if (history[i].Valid) result = new CalculationResult(Result.Ok(history[i].Result));
-                else result = new CalculationResult(Result.Fail("Wrong query"));
+                if (history[i].Valid) 
+                    result = new CalculationResult(Result.Ok(history[i].Result));
+                else 
+                    result = new CalculationResult(Result.Fail("Wrong query"));
 
                 data[i] = new CalculationData(query, result);
             }

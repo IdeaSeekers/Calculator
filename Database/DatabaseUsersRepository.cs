@@ -70,6 +70,7 @@ public class DatabaseUsersRepository
         NpgsqlCommand registerCommand = new NpgsqlCommand(registrationQueryString, _connectionProvider.GetConnection());
         int executeReturnCode = registerCommand.ExecuteNonQuery();
 
-        if (executeReturnCode == -1) throw new NpgsqlException("ExecuteNonQuery() inside update failed");
+        if (executeReturnCode == -1) 
+            throw new NpgsqlException("ExecuteNonQuery() inside update failed");
     }
 }
