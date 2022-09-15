@@ -8,6 +8,8 @@ namespace ServerAPI;
 
 public class HistoryController : Controller
 {
+    DatabaseAPI _dbApi = new DatabaseAPI("user", "password", "database");
+    
     [HttpPost("/history")]
     public ActionResult GetHistory([FromBody] JsonElement json)
     {
@@ -16,8 +18,6 @@ public class HistoryController : Controller
         {
             return Forbid();
         }
-
-        var dbApi = new DatabaseAPI();
         var authApi = new AuthAPI();
         var userInfo = authApi.Verify(new Token(authToken)).Token;
 
@@ -26,7 +26,7 @@ public class HistoryController : Controller
             return Forbid();
         }
 
-        var calculationsHistory = dbApi.GetHistory(userInfo.Value);
+        var calculationsHistory = _dbApi.GetHistory(userInfo.Value);
         return Json(new { history = calculationsHistory });
     }
 }
