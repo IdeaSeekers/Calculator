@@ -68,8 +68,8 @@ public class DatabaseUsersRepository
         String registrationQueryString = GetInsertQueryString(user.Login.Data, user.Password.Data);
 
         NpgsqlCommand registerCommand = new NpgsqlCommand(registrationQueryString, _connectionProvider.GetConnection());
-        int ret = registerCommand.ExecuteNonQuery();
+        int executeReturnCode = registerCommand.ExecuteNonQuery();
 
-        if (ret == -1) throw new NpgsqlException("ExecuteNonQuery() inside update failed");
+        if (executeReturnCode == -1) throw new NpgsqlException("ExecuteNonQuery() inside update failed");
     }
 }

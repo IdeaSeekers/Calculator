@@ -73,8 +73,8 @@ public class DatabaseHistoryRepository
         String insertHistoryQueryString = GetInsertHistoryString(value.Id, value.Query, value.Valid, value.Result);
         
         NpgsqlCommand insertHistoryCommand = new NpgsqlCommand(insertHistoryQueryString, _connectionProvider.GetConnection());
-        int ret = insertHistoryCommand.ExecuteNonQuery();
+        int executeReturnCode = insertHistoryCommand.ExecuteNonQuery();
 
-        if (ret == -1) throw new NpgsqlException("ExecuteNonQuery() inside insert failed");
+        if (executeReturnCode == -1) throw new NpgsqlException("ExecuteNonQuery() inside insert failed");
     }
 }
