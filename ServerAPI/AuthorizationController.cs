@@ -7,6 +7,12 @@ namespace ServerAPI;
 
 public class AuthorizationController : Controller
 {
+    private readonly IAuthApi _authApi;
+    public AuthorizationController(IAuthApi authApi)
+    {
+        _authApi = authApi;
+    }
+    
     [HttpPost, Route("/signin")]
     public ActionResult SignIn([FromBody] JsonElement json)
     {
@@ -18,8 +24,7 @@ public class AuthorizationController : Controller
             return Forbid();
         }
 
-        var authApi = new AuthAPI();
-        var result = authApi.SignIn(new User(
+        var result = _authApi.SignIn(new User(
                 new Login(userLogin),
                 new Password(userPassword)
             )
@@ -44,8 +49,7 @@ public class AuthorizationController : Controller
             return BadRequest();
         }
 
-        var authApi = new AuthAPI();
-        var registerResult = authApi.Register(new User(
+        var registerResult = _authApi.Register(new User(
                 new Login(userLogin),
                 new Password(userPassword)
             )

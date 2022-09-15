@@ -18,7 +18,7 @@ public class HistoryController : Controller
         {
             return Forbid();
         }
-        var authApi = new AuthAPI();
+        var authApi = new AuthApiImpl(_dbApi);
         var userInfo = authApi.Verify(new Token(authToken)).Token;
 
         if (userInfo.IsFailed)

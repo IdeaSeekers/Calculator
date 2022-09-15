@@ -10,8 +10,15 @@ using Calculator;
 
 public class CalculationsController : Controller
 {
-    DatabaseAPI _dbApi = new DatabaseAPI("user", "password", "database");
-    
+    private readonly DatabaseAPI _db;
+    private readonly IAuthApi _authApi;
+
+    public CalculationsController(DatabaseAPI db, IAuthApi authApi)
+    {
+        _db = db;
+        _authApi = authApi;
+    }
+
     [HttpPost, Route("/calculate")]
     public ActionResult Calculate([FromBody] JsonElement json)
     {
@@ -36,15 +43,14 @@ public class CalculationsController : Controller
             return Json(new { result = calculationResult.Value, comment = "OK" });   
         }
         
-        var authApi = new AuthAPI();
-        var userInfo = authApi.Verify(new Token(authToken)).Token;
+        var userInfo = _authApi.Verify(new Token(authToken)).Token;
 
         if (userInfo.IsFailed)
         {
             return Json(new { result = calculationResult.Value, comment = "OK" });   
         }
 
-        var calculationsHistory = _dbApi.GetHistory(userInfo.Value);
+        var calculationsHistory = _db.GetHistory(userInfo.Value);
         return Json(new { history = calculationsHistory, result = calculationResult.Value, comment = "OK" });
     }
 }
