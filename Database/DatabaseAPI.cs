@@ -8,6 +8,8 @@ public class DatabaseAPI
 {
     private DatabaseHistoryRepository historyRepo;
     private DatabaseUsersRepository usersRepo;
+
+    private Double BAD_RESULT = -1;
     
     public DatabaseAPI(String databaseUser, String password, String databaseName)
     {
@@ -23,7 +25,7 @@ public class DatabaseAPI
             row.UserId = usersRepo.Get(userInfo).Id;
             row.Query = calculationData.Query.QueryString;
             row.Valid = calculationData.Result.Result.IsSuccess;
-            row.Result = -1;
+            row.Result = BAD_RESULT;
             if (row.Valid) 
                 row.Result = calculationData.Result.Result.Value;
             
