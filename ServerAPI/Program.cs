@@ -3,9 +3,12 @@ using Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var databaseUser = "aaa";
-var databasePassword = "bb";
-var databaseName = "cc";
+var databaseUser = Environment.GetEnvironmentVariable("DATABASE_USER")
+                   ?? throw new Exception("No DATABASE_USER found");
+var databasePassword = Environment.GetEnvironmentVariable("DATABASE_PASSWORD")
+                       ?? throw new Exception("No DATABASE_PASSWORD found");
+var databaseName = Environment.GetEnvironmentVariable("DATABASE_NAME")
+                   ?? throw new Exception("No DATABASE_NAME found");
 
 builder.Services.AddSingleton(new DatabaseAPI(databaseUser, databasePassword, databaseName));
 builder.Services.AddSingleton<IAuthApi, AuthApiImpl>();

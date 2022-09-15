@@ -1,9 +1,9 @@
 namespace Domain;
 
-public record class Password(string Data);
+public readonly record struct Password(string Data);
 
-public record class Login(string Data);
+public readonly record struct Login(string Data);
 
-public record class UserInfo(Login Login);
+public record struct UserInfo(Login Login);
 
-public record class User(Login Login, Password Password);
+public record struct User(Login Login, Password Password);
