@@ -16,8 +16,20 @@ public class AuthorizationController : Controller
     [HttpPost, Route("/signin")]
     public ActionResult SignIn([FromBody] JsonElement json)
     {
-        var userLogin = json.GetProperty("login").GetString();
-        var userPassword = json.GetProperty("password").GetString();
+        var userLogin = "";
+        try
+        {
+            userLogin = json.GetProperty("login").ToString();
+        }
+        catch (Exception ignored) { }
+
+
+        var userPassword = "";
+        try
+        {
+            userPassword = json.GetProperty("password").GetString();
+        }
+        catch (Exception ignored) { }
 
         if (string.IsNullOrEmpty(userLogin) || string.IsNullOrEmpty(userPassword))
         {
