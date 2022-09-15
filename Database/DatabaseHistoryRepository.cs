@@ -6,7 +6,7 @@ namespace Database;
 
 public struct HistoryDatabaseRow
 {
-    public Int32 Id;
+    public Int32 UserId;
     public String Query;
     public Boolean Valid;
     public Double Result;
@@ -55,7 +55,7 @@ public class DatabaseHistoryRepository
             while (reader.Read())
             {
                 HistoryDatabaseRow row = new HistoryDatabaseRow();
-                row.Id = reader.GetInt32(idColumn);
+                row.UserId = reader.GetInt32(idColumn);
                 row.Query = reader.GetString(queryColumn);
                 row.Valid = reader.GetBoolean(validColumn);
                 row.Result = reader.GetDouble(resultColumn);
@@ -70,7 +70,7 @@ public class DatabaseHistoryRepository
 
     public void Update(HistoryDatabaseRow value)
     {
-        String insertHistoryQueryString = GetInsertHistoryString(value.Id, value.Query, value.Valid, value.Result);
+        String insertHistoryQueryString = GetInsertHistoryString(value.UserId, value.Query, value.Valid, value.Result);
         
         NpgsqlCommand insertHistoryCommand = new NpgsqlCommand(insertHistoryQueryString, _connectionProvider.GetConnection());
         int executeReturnCode = insertHistoryCommand.ExecuteNonQuery();

@@ -20,7 +20,7 @@ public class DatabaseAPI
         try
         {
             HistoryDatabaseRow row = new HistoryDatabaseRow();
-            row.Id = usersRepo.Get(userInfo).Id;
+            row.UserId = usersRepo.Get(userInfo).Id;
             row.Query = calculationData.Query.QueryString;
             row.Valid = calculationData.Result.Result.IsSuccess;
             row.Result = -1;
