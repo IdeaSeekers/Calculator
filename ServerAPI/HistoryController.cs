@@ -13,7 +13,13 @@ public class HistoryController : Controller
     [HttpPost("/history")]
     public ActionResult GetHistory([FromBody] JsonElement json)
     {
-        var authToken = json.GetProperty("authToken").ToString();
+        var authToken = "";
+        try
+        {
+            authToken = json.GetProperty("authToken").ToString();
+        }
+        catch (Exception ignored) { }
+
         if (string.IsNullOrEmpty(authToken))
         {
             return Forbid();

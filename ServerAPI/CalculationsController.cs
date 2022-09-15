@@ -2,6 +2,7 @@ using System.Text.Json;
 using Auth;
 using Database;
 using Domain;
+using Newtonsoft.Json.Linq;
 
 namespace ServerAPI;
 
@@ -22,8 +23,20 @@ public class CalculationsController : Controller
     [HttpPost, Route("/calculate")]
     public ActionResult Calculate([FromBody] JsonElement json)
     {
-        var authToken = json.GetProperty("authToken").ToString();
-        var calculationRequest = json.GetProperty("calculation").GetString();
+        var authToken = "";
+        try
+        {
+            authToken = json.GetProperty("authToken").ToString();
+        }
+        catch (Exception ignored) { }
+
+
+        var calculationRequest = "";
+        try
+        {
+            calculationRequest = json.GetProperty("calculation").GetString();
+        }
+        catch (Exception ignored) { }
 
         if (string.IsNullOrEmpty(calculationRequest))
         {
@@ -35,7 +48,7 @@ public class CalculationsController : Controller
 
         if (calculationResult.IsFailed)
         {
-            return Json(new { comment = calculationResult.Errors.First() });
+            return Json(new { comment = calculationResult.Errors.First().Message });
         }
 
         if (string.IsNullOrEmpty(authToken))
