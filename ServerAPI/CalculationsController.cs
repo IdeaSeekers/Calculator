@@ -40,7 +40,21 @@ public class CalculationsController : Controller
 
         if (string.IsNullOrEmpty(calculationRequest))
         {
-            return BadRequest();
+            authToken = json.GetProperty("authToken").ToString();
+        }
+        catch (Exception ignored) { }
+
+
+        var calculationRequest = "";
+        try
+        {
+            calculationRequest = json.GetProperty("calculation").GetString();
+        }
+        catch (Exception ignored) { }
+
+        if (string.IsNullOrEmpty(calculationRequest))
+        {
+            return Json(new { comment = calculationResult.Errors.First().Message });
         }
 
         var calculationQuery = new CalculationQuery(calculationRequest);
