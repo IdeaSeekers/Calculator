@@ -2,7 +2,6 @@ using System.Text.Json;
 using Auth;
 using Database;
 using Domain;
-using Newtonsoft.Json.Linq;
 
 namespace ServerAPI;
 
@@ -38,32 +37,37 @@ public class CalculationsController : Controller
         }
         catch (Exception ignored) { }
 
-        if (string.IsNullOrEmpty(calculationRequest))
-        {
-            return BadRequest();
-        }
-
         var calculationQuery = new CalculationQuery(calculationRequest);
-        var calculationResult = CalculatorAPI.Calculate(calculationQuery).Result;
-
-        if (calculationResult.IsFailed)
-        {
-            return Json(new { comment = calculationResult.Errors.First().Message });
-        }
-
+        var calculationResult = CalculatorAPI.Calculate(calculationQuery);
+        
         if (string.IsNullOrEmpty(authToken))
         {
-            return Json(new { result = calculationResult.Value, comment = "OK" });   
+            if (calculationResult.Result.IsFailed)
+            {
+                return Json(new { comment = calculationResult.Result.Errors.First() });
+            }
+            return Json(new { result = calculationResult.Result.Value, comment = "OK" });   
         }
         
         var userInfo = _authApi.Verify(new Token(authToken)).Token;
-
+        
         if (userInfo.IsFailed)
         {
-            return Json(new { result = calculationResult.Value, comment = "OK" });   
+            if (calculationResult.Result.IsFailed)
+            {
+                return Json(new { comment = calculationResult.Result.Errors.First() });
+            }
+            return Json(new { result = calculationResult.Result.Value, comment = "OK" });   
         }
+        
+        _db.UpdateHistory(new CalculationData(calculationQuery, calculationResult),
+            userInfo.Value);
 
-        var calculationsHistory = _db.GetHistory(userInfo.Value);
-        return Json(new { history = calculationsHistory, result = calculationResult.Value, comment = "OK" });
+        var calculationsHistory = _db.GetHistory(userInfo.Value).History.Value;
+        if (calculationResult.Result.IsFailed)
+        {
+            return Json(new { comment = calculationResult.Result.Errors.First(), history = calculationsHistory });
+        }
+        return Json(new { history = calculationsHistory, result = calculationResult.Result.Value, comment = "OK" });
     }
 }
