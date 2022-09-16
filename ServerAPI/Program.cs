@@ -3,13 +3,18 @@ using Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var databaseUser = Environment.GetEnvironmentVariable("DATABASE_USER")
-                   ?? throw new Exception("No DATABASE_USER found");
-var databasePassword = Environment.GetEnvironmentVariable("DATABASE_PASSWORD")
-                       ?? throw new Exception("No DATABASE_PASSWORD found");
-var databaseName = Environment.GetEnvironmentVariable("DATABASE_NAME")
-                   ?? throw new Exception("No DATABASE_NAME found");
+var databaseUser = Environment.GetEnvironmentVariable("DATABASE_USER") ?? "user";
+var databasePassword = Environment.GetEnvironmentVariable("DATABASE_PASSWORD") ?? "password";
+var databaseName = Environment.GetEnvironmentVariable("DATABASE_NAME") ?? "name";
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policyBuilder => policyBuilder
+        .AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+    );
+});
 builder.Services.AddSingleton(new DatabaseAPI(databaseUser, databasePassword, databaseName));
 builder.Services.AddSingleton<IAuthApi, AuthApiImpl>();
 builder.Logging.AddConsole();
@@ -20,6 +25,7 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
+app.UseCors();
 app.MapControllers();
 
 app.Logger.LogInformation("LAUNCHING");
