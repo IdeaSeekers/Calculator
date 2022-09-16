@@ -33,6 +33,6 @@ public class HistoryController : Controller
         }
 
         var calculationsHistory = _dbApi.GetHistory(userInfo.Value);
-        return Json(new { history = calculationsHistory });
+        return Json(new { history = calculationsHistory.History.Value });
     }
 }
