@@ -2,7 +2,6 @@ using System.Text.Json;
 using Auth;
 using Database;
 using Domain;
-using Newtonsoft.Json.Linq;
 
 namespace ServerAPI;
 
@@ -37,25 +36,6 @@ public class CalculationsController : Controller
             calculationRequest = json.GetProperty("calculation").GetString();
         }
         catch (Exception ignored) { }
-
-        if (string.IsNullOrEmpty(calculationRequest))
-        {
-            authToken = json.GetProperty("authToken").ToString();
-        }
-        catch (Exception ignored) { }
-
-
-        var calculationRequest = "";
-        try
-        {
-            calculationRequest = json.GetProperty("calculation").GetString();
-        }
-        catch (Exception ignored) { }
-
-        if (string.IsNullOrEmpty(calculationRequest))
-        {
-            return Json(new { comment = calculationResult.Errors.First().Message });
-        }
 
         var calculationQuery = new CalculationQuery(calculationRequest);
         var calculationResult = CalculatorAPI.Calculate(calculationQuery);
